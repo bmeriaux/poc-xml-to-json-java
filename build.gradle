@@ -1,0 +1,44 @@
+plugins {
+  id 'java'
+  id 'idea'
+  id 'project-report'
+  id 'org.unbroken-dome.xjc' version '1.4.3'
+}
+
+repositories {
+  mavenCentral()
+}
+dependencies {
+  implementation 'javax.xml.bind:jaxb-api:2.3.1'
+  implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+  implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+  implementation 'javax.activation:activation:1.1.1'
+  implementation 'com.fasterxml.jackson.core:jackson-core:2.10.3'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+group 'fr.gouv.ansc.nexsis'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 11
+targetCompatibility = 11
+
+xjcGenerate {
+  source = fileTree('src/main/resources/edxl-de') { include '*.xsd' }
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "XmlToJson"
+  }
+
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+test {
+  useJUnitPlatform()
+}
